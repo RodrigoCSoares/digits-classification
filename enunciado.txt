@@ -1,0 +1,13 @@
+Lembrando, temos 200 exemplares de cada um dos dígitos, de 0 a 9, totalizando 2 mil exemplares.
+
+Cada exemplar está contido em um arquivo, cujo nome tem o seguinte padrão: classe_id.BMP.inv.pgm.
+
+Ex: 0_001.BMP.iv.pgm, representa o exemplar 001 do dígito 0.
+
+Cada arquivo contem, após a terceira linha, 4096 dimensões do exemplar.
+
+A tarefa consiste em ler cada arquivo em R, e popular uma linha de um dataframe que vai apresentar, portanto, 4096 colunas e 2 mil linhas .
+
+Além disso, você deverá incluir uma coluna a mais (a última do dataframe) para inserir  a classe do dígito (0 a 9).
+
+Bom trabalho!
