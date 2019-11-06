@@ -30,8 +30,22 @@ cl <- dataframe[samples, ncol(dataframe)]
 train <- dataframe[samples, -ncol(dataframe)]
 test <- dataframe[-samples, -ncol(dataframe)]
 
-knnResult1 <- knn(train, test, cl)
-knnResult3 <- knn(train, test, cl, k = 3)
-knnResult7 <- knn(train, test, cl, k = 7)
-knnResult9 <- knn(train, test, cl, k = 9)
-expectedResult <- dataframe[-samples, ncol(dataframe)]
+knnResult1 <- as.vector(knn(train, test, cl))
+knnResult3 <- as.vector(knn(train, test, cl, k = 3))
+knnResult7 <- as.vector(knn(train, test, cl, k = 7))
+knnResult9 <- as.vector(knn(train, test, cl, k = 9))
+expectedResult <- as.vector(dataframe[-samples, ncol(dataframe)])
+
+resultDataset <- as.data.frame(knnResult1)
+resultDataset[,2] <- as.data.frame(knnResult3)
+resultDataset[,3] <- as.data.frame(knnResult7)
+resultDataset[,4] <- as.data.frame(knnResult9)
+resultDataset[,5] <- as.data.frame(expectedResult)
+
+knnAccuracy <- vector()
+# Calculando a acuracia do KNN
+for (i in 1:ncol(resultDataset) - 1) {
+  tab <- table(resultDataset[,i] == resultDataset[,5])
+  freq <- tab[names(tab)==TRUE]
+  knnAccuracy[i] <- freq/nrow(resultDataset)
+}
