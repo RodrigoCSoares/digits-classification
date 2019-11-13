@@ -1,5 +1,6 @@
 library(pixmap)
 library(class)
+library(caret)
 
 # Le todos os arquivos do diretorio
 files_list <- list.files(path='./files')
@@ -49,3 +50,14 @@ for (i in 1:ncol(resultDataset) - 1) {
   freq <- tab[names(tab)==TRUE]
   knnAccuracy[i] <- freq/nrow(resultDataset)
 }
+
+knnResult1 <- knn(train, test, cl)
+knnResult3 <- knn(train, test, cl, k = 3)
+knnResult7 <- knn(train, test, cl, k = 7)
+knnResult9 <- knn(train, test, cl, k = 9)
+expectedResult <- as.factor(dataframe[-samples, ncol(dataframe)])
+
+confusionMatrix(knnResult1, expectedResult)
+confusionMatrix(knnResult3, expectedResult)
+confusionMatrix(knnResult7, expectedResult)
+confusionMatrix(knnResult9, expectedResult)
