@@ -90,3 +90,11 @@ test <-  dataframe[-samples,]
 modelo<-rpart(digito ~ ., train, method="class", control = rpart.control(minsplit = 1))
 
 plot<-rpart.plot(modelo, type = 3)
+
+# Implementando o K-Means
+library(cluster)
+library(fpc)
+kMeansData <- dataframe[, -ncol(dataframe)]
+kMeansClass <- dataframe[, ncol(dataframe)]
+
+km <- kmeans(kMeansData, 10)
