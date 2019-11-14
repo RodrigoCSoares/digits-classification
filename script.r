@@ -51,6 +51,7 @@ for (i in 1:ncol(resultDataset) - 1) {
   knnAccuracy[i] <- freq/nrow(resultDataset)
 }
 
+# Calculando as matrizes de confusao
 knnResult1 <- knn(train, test, cl)
 knnResult3 <- knn(train, test, cl, k = 3)
 knnResult7 <- knn(train, test, cl, k = 7)
@@ -61,3 +62,31 @@ confusionMatrix(knnResult1, expectedResult)
 confusionMatrix(knnResult3, expectedResult)
 confusionMatrix(knnResult7, expectedResult)
 confusionMatrix(knnResult9, expectedResult)
+
+# Implementando o SVM
+install.packages("e1071")
+library(e1071)
+
+svmTrain <- dataframe[samples,]
+svmTest <- dataframe[-samples,]
+svmTestClass <- svmTest[ ,ncol(svmTest)]
+svmTest <- svmTest[ ,-ncol(svmTest)]
+
+classifier = svm(formula = digito ~ .,
+                 data = svmTrain,
+                 type = 'C-classification',
+                 kernel = 'linear')
+
+svmPredict = predict(classifier, newdata = svmTest)
+svmAcurrancy = length(which(svmPredict == svmTestClass))/length(svmTestClass)
+
+# Implementando o modelo da arvore de decisao
+library(rpart)
+library(rpart.plot)
+
+train <- dataframe[samples,]
+test <-  dataframe[-samples,]
+
+modelo<-rpart(digito ~ ., train, method="class", control = rpart.control(minsplit = 1))
+
+plot<-rpart.plot(modelo, type = 3)
