@@ -84,17 +84,25 @@ svmAcurrancy = length(which(svmPredict == svmTestClass))/length(svmTestClass)
 library(rpart)
 library(rpart.plot)
 
-train <- dataframe[samples,]
-test <-  dataframe[-samples,]
+train <- dataframe[samples, -ncol(dataframe)]
+test <-  dataframe[-samples, -ncol(dataframe)]
 
-modelo<-rpart(digito ~ ., train, method="class", control = rpart.control(minsplit = 1))
-
-plot<-rpart.plot(modelo, type = 3)
+modelo <- rpart(digito ~ ., train, method="class", control = rpart.control(minsplit = 1))
+pred <- predict(modelo, newdata = test, type="class")
+plot <- rpart.plot(modelo, type = 3)
 
 # Implementando o K-Means
 library(cluster)
 library(fpc)
 kMeansData <- dataframe[, -ncol(dataframe)]
 kMeansClass <- dataframe[, ncol(dataframe)]
+ 
+# Calculando o número ideal de clusters com o método Elbow
+wss <- (nrow(dataframe)-1)*sum(apply(dataframe,2,var))
+for (i in 2:20) {
+  wss[i] <- sum(kmeans(dataframe, centers=i)$withinss)
+}
+plot(1:20, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
 
-km <- kmeans(kMeansData, 10)
+# De acordo com o plot o K-Means nao consiguiria separar as classes com uma boa precisão, pois
+# não existe uma quebra brusca no gráfico plotado.
