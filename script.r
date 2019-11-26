@@ -5,6 +5,7 @@ library(caret)
 library(rpart)
 library(rpart.plot)
 library(e1071)
+library(factoextra)
 
 # Leitura dos arquivos do diretório
 files_list <- list.files(path='./files')
@@ -53,13 +54,14 @@ svmTest <- dataframe[-samples,]
 svmTestClass <- svmTest[ ,ncol(svmTest)]
 svmTest <- svmTest[ ,-ncol(svmTest)]
 
-classifier = svm(formula = digito ~ .,
+classifier <- svm(formula = digito ~ .,
                  data = svmTrain,
                  type = 'C-classification',
                  kernel = 'linear')
 
-svmPredict = predict(classifier, newdata = svmTest)
-svmAcurrancy = length(which(svmPredict == svmTestClass))/length(svmTestClass)
+svmPredict <- predict(classifier, newdata = svmTest)
+
+confusionMatrix(svmPredict, as.factor(svmTestClass))
 
 # Implementando o modelo da arvore de decisao
 train <- dataframe[samples,]
@@ -73,4 +75,14 @@ modelo <- rpart(digito ~ ., train, method="class", control = rpart.control(minsp
 pred <- predict(modelo, newdata = test, type="class")
 plot <- rpart.plot(modelo, type = 3)
 
-confusionMatrix(pred, testClass )
+confusionMatrix(pred, as.factor(testClass))
+
+# Cluster
+
+
+# PCA
+dataframe.pca <- prcomp(dataframe[,-ncol(dataframe)], center = TRUE, scale. = TRUE)
+newDataframe <- as.data.frame(predict(dataframe.pca, dataframe))
+
+newDataframe$digito <- dataframe$digito
+
