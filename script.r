@@ -1,8 +1,12 @@
+# Import das bibliotecas
 library(pixmap)
 library(class)
 library(caret)
+library(rpart)
+library(rpart.plot)
+library(e1071)
 
-# Le todos os arquivos do diretorio
+# Leitura dos arquivos do diretório
 files_list <- list.files(path='./files')
 
 # Cria o matriz dos exemplares
@@ -31,27 +35,7 @@ cl <- dataframe[samples, ncol(dataframe)]
 train <- dataframe[samples, -ncol(dataframe)]
 test <- dataframe[-samples, -ncol(dataframe)]
 
-knnResult1 <- as.vector(knn(train, test, cl))
-knnResult3 <- as.vector(knn(train, test, cl, k = 3))
-knnResult7 <- as.vector(knn(train, test, cl, k = 7))
-knnResult9 <- as.vector(knn(train, test, cl, k = 9))
-expectedResult <- as.vector(dataframe[-samples, ncol(dataframe)])
-
-resultDataset <- as.data.frame(knnResult1)
-resultDataset[,2] <- as.data.frame(knnResult3)
-resultDataset[,3] <- as.data.frame(knnResult7)
-resultDataset[,4] <- as.data.frame(knnResult9)
-resultDataset[,5] <- as.data.frame(expectedResult)
-
-knnAccuracy <- vector()
-# Calculando a acuracia do KNN
-for (i in 1:ncol(resultDataset) - 1) {
-  tab <- table(resultDataset[,i] == resultDataset[,5])
-  freq <- tab[names(tab)==TRUE]
-  knnAccuracy[i] <- freq/nrow(resultDataset)
-}
-
-# Calculando as matrizes de confusao
+# Implementando o Knn
 knnResult1 <- knn(train, test, cl)
 knnResult3 <- knn(train, test, cl, k = 3)
 knnResult7 <- knn(train, test, cl, k = 7)
@@ -64,9 +48,6 @@ confusionMatrix(knnResult7, expectedResult)
 confusionMatrix(knnResult9, expectedResult)
 
 # Implementando o SVM
-install.packages("e1071")
-library(e1071)
-
 svmTrain <- dataframe[samples,]
 svmTest <- dataframe[-samples,]
 svmTestClass <- svmTest[ ,ncol(svmTest)]
@@ -81,28 +62,15 @@ svmPredict = predict(classifier, newdata = svmTest)
 svmAcurrancy = length(which(svmPredict == svmTestClass))/length(svmTestClass)
 
 # Implementando o modelo da arvore de decisao
-library(rpart)
-library(rpart.plot)
+train <- dataframe[samples,]
+test <-  dataframe[-samples,]
 
-train <- dataframe[samples, -ncol(dataframe)]
-test <-  dataframe[-samples, -ncol(dataframe)]
+testClass <- test[,ncol(dataframe)]
+
+test <- test[,-ncol(dataframe)]
 
 modelo <- rpart(digito ~ ., train, method="class", control = rpart.control(minsplit = 1))
 pred <- predict(modelo, newdata = test, type="class")
 plot <- rpart.plot(modelo, type = 3)
 
-# Implementando o K-Means
-library(cluster)
-library(fpc)
-kMeansData <- dataframe[, -ncol(dataframe)]
-kMeansClass <- dataframe[, ncol(dataframe)]
- 
-# Calculando o número ideal de clusters com o método Elbow
-wss <- (nrow(dataframe)-1)*sum(apply(dataframe,2,var))
-for (i in 2:20) {
-  wss[i] <- sum(kmeans(dataframe, centers=i)$withinss)
-}
-plot(1:20, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
-
-# De acordo com o plot o K-Means nao consiguiria separar as classes com uma boa precisão, pois
-# não existe uma quebra brusca no gráfico plotado.
+confusionMatrix(pred, testClass )
