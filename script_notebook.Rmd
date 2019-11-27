@@ -13,7 +13,8 @@ library(rpart)
 library(rpart.plot)
 library(e1071)
 library(factoextra)
-
+```
+```{r}
 # Building dataset
 
   # Reading dir files 
@@ -35,7 +36,8 @@ library(factoextra)
 
   # Insert class column to predict methods
   dataframe$digito <- substr(files_list[1:length(files_list)], 1, 1) 
-
+```
+```{r}
 # Selecting samples to train and test objects
 set.seed(4321)
 
@@ -52,7 +54,8 @@ test <- dataframe[-samples, -ncol(dataframe)]
 train_class <- dataframe[samples, ncol(dataframe)]
 
 test_class <- as.factor(dataframe[-samples, ncol(dataframe)])
-
+```
+```{r}
 # Knn classification
 
 knnResult1 <- knn(train_knn, test, train_class)
@@ -78,7 +81,8 @@ knnResult9 <- knn(train_knn, test, train_class, k = 9)
 confusionMatrix(knnResult9, test_class)
 # knn 9 plot
 plot(knnResult9)
-
+```
+```{r}
 # SVM classification
 
 # Building classifier model
@@ -92,7 +96,8 @@ svmPredict <- predict(classifier, newdata = test)
 confusionMatrix(svmPredict,test_class)
 # SVM plot
 plot(svmPredict)
-
+```
+```{r}
 # Tree decision classification
 
 # Building tree model
@@ -108,7 +113,8 @@ confusionMatrix(treePredict, test_class)
 plot <- rpart.plot(model, type = 3)
 # Tree predict plot
 plot(treePredict)
-
+```
+```{r}
 # Cluster
 
 # Selecting columns to cluster
@@ -118,7 +124,8 @@ kmeans_predict <- kmeans(cluster, 10)
 # Checking accuracy with table
 table(kmeans_predict$cluster)
 table(dataframe[,ncol(dataframe)])
-
+```
+```{r}
 # PCA
 
 # Create new dataframe with pca
@@ -126,7 +133,8 @@ dataframe.pca <- prcomp(dataframe[,-ncol(dataframe)], center = TRUE, scale. = FA
 newDataframe <- as.data.frame(predict(dataframe.pca, dataframe))
 # Setting "digito" column to new dataframe
 newDataframe$digito <- dataframe$digito
-
+```
+```{r}
 # Rerun predict methods
 
 # Selecting samples to train and test objects with pca dataframe
@@ -145,7 +153,8 @@ test <- newDataframe[-samples, -ncol(newDataframe)]
 train_class <- newDataframe[samples, ncol(newDataframe)]
 
 test_class <- as.factor(newDataframe[-samples, ncol(newDataframe)])
-
+```
+```{r}
 # Knn classification
 
 knnResult1WithPCA <- knn(train_knn, test, train_class)
@@ -171,7 +180,8 @@ knnResult9WithPCA <- knn(train_knn, test, train_class, k = 9)
 confusionMatrix(knnResult9WithPCA, test_class)
 # knn 9 plot
 plot(knnResult9WithPCA)
-
+```
+```{r}
 # SVM classification
 
 # Building classifier model
@@ -185,7 +195,8 @@ svmPredictWithPCA <- predict(classifier, newdata = test)
 confusionMatrix(svmPredictWithPCA,test_class)
 # SVM plot
 plot(svmPredictWithPCA)
-
+```
+```{r}
 # Tree decision classification
 
 # Building tree model
@@ -198,10 +209,11 @@ treePredictWithPCA <- predict(model, newdata = test, type="class")
 # Tree accuracy
 confusionMatrix(treePredictWithPCA, test_class)
 # Tree plot
-plot <- rpart.plot(model, type = 3)
+rpart.plot(model, type = 3)
 # Tree predict plot
 plot(treePredictWithPCA)
-
+```
+```{r}
 # Cluster
 
 # Selecting columns to cluster
@@ -212,3 +224,4 @@ kmeans_predict_with_pca <- kmeans(cluster, 10)
 table(kmeans_predict_with_pca$cluster)
 table(newDataframe[,ncol(newDataframe)])
 ```
+
