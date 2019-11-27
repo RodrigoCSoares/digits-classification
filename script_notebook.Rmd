@@ -1,3 +1,10 @@
+---
+title: "Digits Classification"
+output: html_notebook
+author: Vitor Juliani, Rodrigo Soares
+---
+
+```{r}
 # Libraries import
 library(pixmap)
 library(class)
@@ -204,7 +211,4 @@ kmeans_predict_with_pca <- kmeans(cluster, 10)
 # Checking accuracy with table
 table(kmeans_predict_with_pca$cluster)
 table(newDataframe[,ncol(newDataframe)])
-
-
-
-
+```
